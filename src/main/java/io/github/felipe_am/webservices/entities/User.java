@@ -3,10 +3,23 @@ package io.github.felipe_am.webservices.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+//  A anotação "Entity" a seguir indica para o JPA que os objetos dessa entidade deverão
+//  convertidos para tipo relacional, e armazenados no BD. Já a "Table" é para mudar o nome
+//  que será atribuido a tabela no BD, visto que user é uma palavra reservada do JPA
+@Entity
+@Table(name = "tb_user")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Id // indica qual dos atributos é a chave primária da tabela
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //para dizer que a chave deverá ser autoimplementada pelo JPA
 	private Long id;
 	private String name;
 	private String email;
