@@ -11,6 +11,7 @@ import io.github.felipe_am.webservices.entities.User;
 import io.github.felipe_am.webservices.repositories.UserRepository;
 import io.github.felipe_am.webservices.services.exceptions.DatabaseException;
 import io.github.felipe_am.webservices.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service //registro do componente no mecanismo de injeção para que o Autowired funcione
 public class UserService {
@@ -44,9 +45,15 @@ public class UserService {
 	}
 	
 	public User update(Long id, User obj) {
-		User entity = repository.getReferenceById(id);
-		updateData(entity, obj);
-		return repository.save(entity);
+		try {
+			User entity = repository.getReferenceById(id);
+			updateData(entity, obj);
+			return repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+			throw new ResourceNotFoundException(id);
+		}
+		
 	}
 
 	private void updateData(User entity, User obj) {
