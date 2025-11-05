@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.github.felipe_am.webservices.entities.User;
 import io.github.felipe_am.webservices.repositories.UserRepository;
+import io.github.felipe_am.webservices.services.exceptions.ResourceNotFoundException;
 
 @Service //registro do componente no mecanismo de injeção para que o Autowired funcione
 public class UserService {
@@ -21,7 +22,7 @@ public class UserService {
 	
 	public Optional<User> findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj;
+		return Optional.ofNullable(obj.orElseThrow(() -> new ResourceNotFoundException(id)));
 	}
 	
 	public User insert(User obj) {
