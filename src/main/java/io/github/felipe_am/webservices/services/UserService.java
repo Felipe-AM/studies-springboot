@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import io.github.felipe_am.webservices.entities.User;
 import io.github.felipe_am.webservices.repositories.UserRepository;
+import io.github.felipe_am.webservices.services.exceptions.DatabaseException;
 import io.github.felipe_am.webservices.services.exceptions.ResourceNotFoundException;
 
 @Service //registro do componente no mecanismo de injeção para que o Autowired funcione
@@ -30,7 +32,15 @@ public class UserService {
 	}
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		try {
+			if (repository.existsById(id)) {
+				repository.deleteById(id);
+			} else {
+				throw new ResourceNotFoundException(id);
+			}
+		} catch(DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}			
 	}
 	
 	public User update(Long id, User obj) {
